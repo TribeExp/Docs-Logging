@@ -4,6 +4,7 @@ import com.basakdm.excartest.dao.UserRepositoryDAO;
 import com.basakdm.excartest.entity.UserEntity;
 import com.basakdm.excartest.enum_ent.Roles;
 import com.basakdm.excartest.service.SecurityService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class SecurityServiceImpl implements SecurityService {
 
     @Autowired
@@ -29,8 +31,10 @@ public class SecurityServiceImpl implements SecurityService {
 
     private AuthenticationManager getAuthenticationManager(){
         return authentication -> {
+            log.info("getAuthenticationManager()");
             String email = authentication.getName();
             String password = authentication.getCredentials().toString();
+            log.info("email = " + email, "password = " + password);
             UserEntity user = userRepositoryDAO.findByMailEquals(email)
                     .orElseThrow(() -> new RuntimeException("User with such a mail doesn't exist"));
 
@@ -38,7 +42,7 @@ public class SecurityServiceImpl implements SecurityService {
             /*for (Roles role : user.getRole()){
                 grantedAuthorities.add(new SimpleGrantedAuthority(role.name()));
             }*/
-
+            log.info("return new UsernamePasswordAuthenticationToken");
             return new UsernamePasswordAuthenticationToken(email, password, grantedAuthorities);
         };
     }
@@ -46,7 +50,9 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public String findLoggedInEmail() {
         Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        log.info("userDetails = " + userDetails + ", findLoggedInEmail()") ;
         if (userDetails instanceof UserDetails) {
+            log.info("if (userDetails instanceof UserDetails) == true") ;
             return ((UserDetails) userDetails).getUsername();
         }
         return null;
@@ -54,14 +60,17 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public boolean autoLogin(String email, String password) {
+        log.info("autoLogin()") ;
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        log.info("userDetails = " + userDetails) ;
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
-
+        log.info("authenticationToken = " + authenticationToken) ;
         getAuthenticationManager().authenticate(authenticationToken);
-
+        log.info(".authenticate(authenticationToken") ;
         if (authenticationToken.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            log.info("if (authenticationToken.isAuthenticated()) == true") ;
             return true;
         }
         return false;
