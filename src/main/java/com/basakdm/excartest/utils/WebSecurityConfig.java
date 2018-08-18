@@ -2,6 +2,7 @@ package com.basakdm.excartest.utils;
 
 import com.basakdm.excartest.dao.RoleRepositoryDAO;
 import com.basakdm.excartest.entity.Role;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,7 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -54,22 +56,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
+        log.info("authenticationManagerBean()");
         return super.authenticationManagerBean();
     }
 
     @Autowired
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
+        log.info("auth = " + auth + ", globalUserDetails()");
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(bCryptPasswordEncoder());
     }
 
     @Bean
     public JwtAuthenticationFilter authenticationTokenFilterBean() {
+        log.info("authenticationTokenFilterBean()");
         return new JwtAuthenticationFilter();
     }
 
     @Bean
     BCryptPasswordEncoder bCryptPasswordEncoder() {
+        log.info("bCryptPasswordEncoder()");
         return new BCryptPasswordEncoder();
     }
 
@@ -85,6 +91,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
+        log.info("corsConfigurer()");
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
@@ -99,6 +106,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        log.info("http = " + http + ", configure()");
         http
                 .csrf().disable()
                 .authorizeRequests()
@@ -136,6 +144,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        log.info("AuthenticationManagerBuilder = " + auth + ", configure()");
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(bCryptPasswordEncoder())

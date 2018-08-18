@@ -4,16 +4,20 @@ import com.basakdm.excartest.dto.CarDTO;
 import com.basakdm.excartest.entity.CarEntity;
 import com.basakdm.excartest.enum_ent.car_enum.*;
 import com.basakdm.excartest.service.CarService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
+@Slf4j
 public class ConverterCars {
 
     @Autowired
     private static CarService carService;
 
     public static CarDTO mapCar(CarEntity carEntity) {
+
+        log.info("carEntity = " + carEntity + ", mapCar()");
         CarDTO carDto = new CarDTO();
 
         carDto.setId(carEntity.getId());
@@ -40,7 +44,10 @@ public class ConverterCars {
        // carDto.setTypeUser(carEntity.getTypeUser());
         carDto.setId_owner(carEntity.getId_owner());
         carDto.setOptionalAccessories(carEntity.getOptionalAccessories());
+
+        log.info("carDto = " + carDto + ", mapCar()");
         return carDto;
+
     }
 
     public static CarEntity mapCar(CarDTO carDto) {
@@ -50,6 +57,7 @@ public class ConverterCars {
         if (carEntityOptional.isPresent()) carEntity = carEntityOptional.get();
         else throw new RuntimeException("Incorrect ID of car");
 
+        log.info("CarDTO = " + carDto + ", mapCar()");
         carEntity.setId(carDto.getId());
         carEntity.setBrand(carDto.getBrand());
         carEntity.setModel(carDto.getModel());
@@ -74,6 +82,7 @@ public class ConverterCars {
         //carEntity.setTypeUser(carDto.getTypeUser());
         carEntity.setId_owner(carDto.getId_owner());
         carEntity.setOptionalAccessories(carDto.getOptionalAccessories());
+        log.info("carEntity = " + carEntity + ", mapCar()");
 
         return carEntity;
     }

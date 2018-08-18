@@ -4,18 +4,22 @@ import com.basakdm.excartest.dto.UserDTO;
 import com.basakdm.excartest.entity.CarEntity;
 import com.basakdm.excartest.entity.UserEntity;
 import com.basakdm.excartest.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 
+@Slf4j
 public class ConverterUsers {
 
         @Autowired
         private static UserService userService;
 
         public static UserDTO mapUser(UserEntity userEntity) {
+
+            log.info("userEntity = " + userEntity + " mapUser()");
             UserDTO userDTO = new UserDTO();
             userDTO.setId(userEntity.getId());
             userDTO.setLastName(userEntity.getLastName());
@@ -39,7 +43,7 @@ public class ConverterUsers {
             userDTO.setNotify(userEntity.getNotify());
             userDTO.setActive((userEntity.getActive()));
             userDTO.setRoles((userEntity.getRoles()));
-
+            log.info("userDTO = " + userDTO + " mapUser()");
             return userDTO;
         }
 
@@ -50,6 +54,7 @@ public class ConverterUsers {
             if (userEntityOptional.isPresent()) userEntity = userEntityOptional.get();
             else throw new RuntimeException("Incorrect ID of user");
 
+            log.info("userDTO = " + userDTO + " mapUser()");
             userEntity.setId(userDTO.getId());
             userEntity.setLastName(userDTO.getLastName());
             userEntity.setFirstName(userDTO.getFirstName());
@@ -71,6 +76,7 @@ public class ConverterUsers {
             userEntity.setSetIdCar(userDTO.getSetIdCar());
             userEntity.setActive((userDTO.getActive()));
             userEntity.setRoles((userDTO.getRoles()));
+            log.info("userEntity = " + userEntity + " mapUser()");
 
             return userEntity;
         }
