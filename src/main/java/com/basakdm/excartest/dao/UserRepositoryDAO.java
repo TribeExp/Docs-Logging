@@ -9,5 +9,10 @@ import java.util.Optional;
 @Repository
 public interface UserRepositoryDAO extends JpaRepository<UserEntity, Long> {
 
+    /**
+     * Returns user by email
+     * @param email to be searched
+     * @return Optional<UserEntity>
+     */
     Optional<UserEntity> findByMailEquals(String email);
 }
