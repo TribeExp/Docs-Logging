@@ -35,6 +35,10 @@ public class OrderController {
     @Autowired
     private CarService carServiceImpl;
 
+    /**
+     * Get all Orders.
+     * @return collection of OrderEntity.
+     */
     @GetMapping("/all")
     public Collection<OrderDTO> findAll(){
         log.info("(/order/all), findAll()");
@@ -43,6 +47,11 @@ public class OrderController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Find Orders by id
+     * @param id orders unique identifier.
+     * @return Optional with order, if order was founded. Empty optional in opposite case.
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<OrderDTO> findUserById(@PathVariable @Positive Long id){
         log.info("(/order/{id}), findUserById()");
@@ -51,6 +60,11 @@ public class OrderController {
                 .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * Create Order.
+     * @param orderEntity params for create a new order.
+     * @return Created order with id.
+     */
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody OrderEntity orderEntity){
         log.info("(/order/create), create()");
@@ -58,25 +72,44 @@ public class OrderController {
                 .body(orderService.create(orderEntity));
     }
 
+    /**
+     * Delete order by id.
+     * @param id order params for delete a order.
+     * @return  Void.
+     */
     @DeleteMapping ("/delete/{id}")
     public void delete(@PathVariable @Positive Long id){
         log.info("(/order/delete/{id}), delete()");
         orderService.delete(id);
     }
 
+    /**
+     * Update order by id.
+     * @param orderEntity order params for update a order.
+     * @return  Void.
+     */
     @PostMapping ("/update")
     public void update(@RequestBody OrderEntity orderEntity){
         log.info("(/order/update), update()");
         orderService.update(orderEntity);
     }
 
-    // number of days by car
+    /**
+     * Get the number of days how many user use the machine
+     * @param orderId order params for update a order.
+     * @return  Integer - amount of days.
+     */
     @GetMapping(value = "/getAmountOfDaysById/{orderId}")
     public Integer getAmountOfDaysById(@PathVariable @Positive Long orderId){
         log.info("(/order/getAmountOfDaysById/{orderId}), getAmountOfDaysById()");
         return orderService.findById(orderId).get().getAmountOfDays();
     }
-    // calculate last day driving
+
+    /**
+     * Calculate and get the last day when the user will ride by car
+     * @param orderId order params for find a order, in which we will do the calculation.
+     * @return  Date.
+     */
     @GetMapping(value = "/calcDateFromMomentOfTakingCar/{orderId}")
     public Date calcDateFromMomentOfTakingCar(@PathVariable @Positive Long orderId){
         log.info("(/order/calcDateFromMomentOfTakingCar/{orderId}), calcDateFromMomentOfTakingCar()");
@@ -100,11 +133,22 @@ public class OrderController {
         return lastDay;
     }
 
+    /**
+     * Calculate and get the last day when the user will ride by car
+     * @param orderId order params for find a order, in which we will do the calculation.
+     * @return  Date.
+     */
     @GetMapping(value = "/getPriceAdd/{orderId}")
     public Long getPriceAdd(@PathVariable @Positive Long orderId){
         log.info("order/getPriceAdd/{orderId}, getPriceAdd()");
         return orderService.findById(orderId).get().getPriceAdd();
     }
+
+    /**
+     * Set cell with value-added order.
+     * @param idAndPrice an object that contains an identifier and a price, to search the table.
+     * @return  void.
+     */
     @PostMapping ("/setPriceAdd")
     public void setPriceAdd(@RequestBody OrderIdAndPriceAdd idAndPrice){
         log.info("order/setPriceAdd, setPriceAdd()");
@@ -117,7 +161,11 @@ public class OrderController {
         log.info("orderRepositoryDAO.saveAndFlush(orderEntity);");
     }
 
-    // looking for a price from the order, by carId
+    /**
+     * Getting for a priceAdd from the order, by carId
+     * @param carId params for get addPrice.
+     * @return  Long.
+     */
     @GetMapping(value = "/getPriceAddByIdCar/{carId}")
     public Long getPriceAddByIdCar(@PathVariable @Positive Long carId){
         log.info("(order/getPriceAddByIdCar/{carId}), getPriceAddByIdCar()");
@@ -126,7 +174,12 @@ public class OrderController {
         return orderEntity.getPriceAdd();
     }
 
-    // on this essence you can access any cell
+    /**
+     * Obtaining an Order object, by identifier tsar, with which you can access any cell.
+     * @param carId the identifier of the machine by which we will search for the order.
+     * @return Optional with order, if order was founded. Empty optional in opposite case.
+     */
+    //
     @GetMapping(value = "/getOrderByIdCar/{carId}")
     public OrderEntity getOrderEntityByIdCar(@PathVariable @Positive Long carId){
         log.info("(order/getOrderByIdCar/{carId}), getOrderEntityByIdCar()");
@@ -136,18 +189,33 @@ public class OrderController {
         return orderEntity;
     }
 
-    // method from car controller for calculate finPrice
+    /**
+     * Get carEntity to access any field in the table car.
+     * @param carId params for get finPrice.
+     * @return  Long.
+     */
     @GetMapping(value = "/getCarEntityByIdCar/{carId}")
     public CarEntity getCarEntityById(@PathVariable @Positive Long carId){
         log.info("(order/getCarEntityByIdCar/{carId}), getCarEntityById()");
         return carServiceImpl.findById(carId).get();
     }
 
+    /**
+     * Get calculated finPrice(final price)
+     * @param carId params for get finPrice.
+     * @return  Long.
+     */
     @GetMapping(value = "/getFinPriceByIdCar/{carId}")
     public Long getFinPriceByIdCar(@PathVariable @Positive Long carId){
         log.info("(order/getFinPriceByIdCar/{carId}), getFinPriceByIdCar()");
         return orderService.findByIdCar(carId).get().getFinPrice();
     }
+
+    /**
+     * Set final price(calculate)
+     * @param carId params for set finPrice.
+     * @return  void.
+     */
     @PostMapping ("/setFinPriceByIdCar/{carId}")
     public void setFinPriceByIdCar(@PathVariable @Positive Long carId){
         log.info("(order/setFinPriceByIdCar/{carId}), setFinPriceByIdCar()");
