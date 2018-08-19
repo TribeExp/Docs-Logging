@@ -9,5 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepositoryDAO extends JpaRepository<OrderEntity, Long> {
+
+   /**
+    * Returns orders for id car that are associated with it
+    * @param idCar id of the car that is associated with the desired order
+    * @return  Optional<OrderEntity>
+    */
    Optional<OrderEntity> findByIdCar(Long idCar);
 }
