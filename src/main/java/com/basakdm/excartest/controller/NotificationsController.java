@@ -26,6 +26,10 @@ public class NotificationsController {
     @Autowired
     private NotificationsRepositoryDAO notificationsRepositoryDAO;
 
+    /**
+     * Get all Notifications.
+     * @return collection of NotificationsEntity.
+     */
     @GetMapping("/all")
     public Collection<NotificationsDTO> findAll(){
         log.info("(/notifications/all), findAll()");
@@ -34,6 +38,11 @@ public class NotificationsController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Find notifications by id
+     * @param id notification unique identifier.
+     * @return Optional with notifications, if notifications was founded. Empty optional in opposite case.
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<NotificationsDTO> findCarById(@PathVariable @Positive Long id){
         log.info("(/notifications/{id}), findCarById()");
@@ -43,6 +52,11 @@ public class NotificationsController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * Create notification.
+     * @param notificationsEntity params for create a new notification.
+     * @return Created notification with id.
+     */
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody NotificationsEntity notificationsEntity){
         log.info("(/notifications/create), create()");
@@ -50,36 +64,66 @@ public class NotificationsController {
                 .body(ConverterNotifications.mapNotifyUser(notificationsService.create(notificationsEntity)));
     }
 
+    /**
+     * Delete notification by id.
+     * @param id notification params for delete a notification.
+     * @return  Void.
+     */
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable @Positive Long id){
         log.info("(/notifications/delete), delete()");
         notificationsService.delete(id);
     }
 
+    /**
+     * Update notification by id.
+     * @param notificationsEntity notification params for update a notifications.
+     * @return  Void.
+     */
     @PostMapping ("/update")
     public void update(@RequestBody NotificationsEntity notificationsEntity){
         log.info("(/notifications/update), update()");
         notificationsService.update(notificationsEntity);
     }
 
-
+    /**
+     * Get text notify by id.
+     * @param notifyId notification params for find a text.
+     * @return  String.
+     */
     @GetMapping(value = "/getTextNotifyById/{notifyId}")
     public String getTextNotifyById(@PathVariable @Positive Long notifyId){
         log.info("(/notifications/getTextNotifyById/{notifyId}), getTextNotifyById()");
         return notificationsService.findById(notifyId).get().getTextNotify();
     }
 
+    /**
+     * Get the ID of the person who sent this message.
+     * @param notifyId notification params for find a FromWhomId.
+     * @return  Long.
+     */
     @GetMapping(value = "/getFromWhomIdById/{notifyId}")
     public Long getFromWhomIdById(@PathVariable @Positive Long notifyId){
         log.info("(/notifications/getFromWhomIdById/{notifyId}), getFromWhomIdById()");
         return notificationsService.findById(notifyId).get().getFromWhomId();
     }
+
+    /**
+     * Get the id of the person who received the message.
+     * @param notifyId notification params for find a toWhomId.
+     * @return  Long.
+     */
     @GetMapping(value = "/getToWhomIdById/{notifyId}")
     public Long getToWhomIdById(@PathVariable @Positive Long notifyId){
         log.info("(/notifications/getToWhomIdById/{notifyId}), getToWhomIdById()");
         return notificationsService.findById(notifyId).get().getToWhomId();
     }
 
+    /**
+     * Get an order object by ID, from which you can then take any field.
+     * @param notifyId notification params for find a order.
+     * @return  Long.
+     */
     @GetMapping(value = "/getOrderIdById/{notifyId}")
     public Long getOrderIdById(@PathVariable @Positive Long notifyId){
         log.info("(/notifications/getOrderIdById/{notifyId}), getOrderIdById()");
