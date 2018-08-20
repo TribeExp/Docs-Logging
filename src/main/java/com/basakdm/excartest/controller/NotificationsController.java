@@ -5,6 +5,8 @@ import com.basakdm.excartest.dto.NotificationsDTO;
 import com.basakdm.excartest.entity.NotificationsEntity;
 import com.basakdm.excartest.service.NotificationsService;
 import com.basakdm.excartest.utils.ConverterNotifications;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,7 @@ public class NotificationsController {
      * Get all Notifications.
      * @return collection of NotificationsEntity.
      */
+    @ApiOperation(value = "Get all Notifications.", notes = "")
     @GetMapping("/all")
     public Collection<NotificationsDTO> findAll(){
         log.info("(/notifications/all), findAll()");
@@ -43,8 +46,9 @@ public class NotificationsController {
      * @param id notification unique identifier.
      * @return Optional with notifications, if notifications was founded. Empty optional in opposite case.
      */
+    @ApiOperation(value = "Find notifications by id.", notes = "")
     @GetMapping(value = "/{id}")
-    public ResponseEntity<NotificationsDTO> findCarById(@PathVariable @Positive Long id){
+    public ResponseEntity<NotificationsDTO> findCarById(@PathVariable @Positive @ApiParam("id notification unique identifier")Long id){
         log.info("(/notifications/{id}), findCarById()");
         return notificationsService.findById(id)
                 .map(ConverterNotifications::mapNotifyUser)
@@ -57,8 +61,9 @@ public class NotificationsController {
      * @param notificationsEntity params for create a new notification.
      * @return Created notification with id.
      */
+    @ApiOperation(value = "Create notification.", notes = "")
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody NotificationsEntity notificationsEntity){
+    public ResponseEntity<?> create(@RequestBody @ApiParam("notificationsEntity params for create a new notification") NotificationsEntity notificationsEntity){
         log.info("(/notifications/create), create()");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ConverterNotifications.mapNotifyUser(notificationsService.create(notificationsEntity)));
@@ -69,8 +74,9 @@ public class NotificationsController {
      * @param id notification params for delete a notification.
      * @return  Void.
      */
+    @ApiOperation(value = "Delete notification by id.", notes = "")
     @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable @Positive Long id){
+    public void delete(@PathVariable @Positive @ApiParam("id notification params for delete a notification") Long id){
         log.info("(/notifications/delete), delete()");
         notificationsService.delete(id);
     }
@@ -80,8 +86,9 @@ public class NotificationsController {
      * @param notificationsEntity notification params for update a notifications.
      * @return  Void.
      */
+    @ApiOperation(value = "Update notification by id.", notes = "")
     @PostMapping ("/update")
-    public void update(@RequestBody NotificationsEntity notificationsEntity){
+    public void update(@RequestBody @ApiParam("notificationsEntity notification params for update a notifications") NotificationsEntity notificationsEntity){
         log.info("(/notifications/update), update()");
         notificationsService.update(notificationsEntity);
     }
@@ -91,8 +98,9 @@ public class NotificationsController {
      * @param notifyId notification params for find a text.
      * @return  String.
      */
+    @ApiOperation(value = "Get text notify by id.", notes = "")
     @GetMapping(value = "/getTextNotifyById/{notifyId}")
-    public String getTextNotifyById(@PathVariable @Positive Long notifyId){
+    public String getTextNotifyById(@PathVariable @Positive @ApiParam("notifyId notification params for find a text") Long notifyId){
         log.info("(/notifications/getTextNotifyById/{notifyId}), getTextNotifyById()");
         return notificationsService.findById(notifyId).get().getTextNotify();
     }
@@ -102,8 +110,9 @@ public class NotificationsController {
      * @param notifyId notification params for find a FromWhomId.
      * @return  Long.
      */
+    @ApiOperation(value = "Get the ID of the person who sent this message.", notes = "")
     @GetMapping(value = "/getFromWhomIdById/{notifyId}")
-    public Long getFromWhomIdById(@PathVariable @Positive Long notifyId){
+    public Long getFromWhomIdById(@PathVariable @Positive @ApiParam("notifyId notification params for find a FromWhomId") Long notifyId){
         log.info("(/notifications/getFromWhomIdById/{notifyId}), getFromWhomIdById()");
         return notificationsService.findById(notifyId).get().getFromWhomId();
     }
@@ -113,8 +122,9 @@ public class NotificationsController {
      * @param notifyId notification params for find a toWhomId.
      * @return  Long.
      */
+    @ApiOperation(value = "Get the id of the person who received the message.", notes = "")
     @GetMapping(value = "/getToWhomIdById/{notifyId}")
-    public Long getToWhomIdById(@PathVariable @Positive Long notifyId){
+    public Long getToWhomIdById(@PathVariable @Positive @ApiParam("notifyId notification params for find a toWhomId") Long notifyId){
         log.info("(/notifications/getToWhomIdById/{notifyId}), getToWhomIdById()");
         return notificationsService.findById(notifyId).get().getToWhomId();
     }
@@ -124,8 +134,9 @@ public class NotificationsController {
      * @param notifyId notification params for find a order.
      * @return  Long.
      */
+    @ApiOperation(value = "Get an order object by ID, from which you can then take any field.", notes = "")
     @GetMapping(value = "/getOrderIdById/{notifyId}")
-    public Long getOrderIdById(@PathVariable @Positive Long notifyId){
+    public Long getOrderIdById(@PathVariable @Positive @ApiParam("notifyId notification params for find a order") Long notifyId){
         log.info("(/notifications/getOrderIdById/{notifyId}), getOrderIdById()");
         return notificationsService.findById(notifyId).get().getOrderId();
     }
